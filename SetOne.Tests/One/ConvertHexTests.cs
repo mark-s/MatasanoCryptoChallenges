@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
+using MatasantoCrypto.Set1.One;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.One
+namespace SetOne.Tests.One
 {
     [TestFixture]
     public class ConvertHexTests

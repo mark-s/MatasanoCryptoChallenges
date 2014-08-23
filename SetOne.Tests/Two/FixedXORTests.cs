@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
 using MatasantoCrypto.Set1.One;
+using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.Two
+namespace SetOne.Tests.Two
 {
     [TestFixture]
     public class FixedXORTests

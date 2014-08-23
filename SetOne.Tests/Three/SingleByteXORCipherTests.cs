@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using MatasantoCrypto.Set1.One;
 using MatasantoCrypto.Set1.SharedCore;
+using MatasantoCrypto.Set1.Three;
 using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.Three
+namespace SetOne.Tests.Three
 {
     public class SingleByteXORCipherTests
     {

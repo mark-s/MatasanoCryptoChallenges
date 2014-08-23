@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SetOne.Properties
+namespace MatasantoCrypto.Set1.Properties
 {
 
 

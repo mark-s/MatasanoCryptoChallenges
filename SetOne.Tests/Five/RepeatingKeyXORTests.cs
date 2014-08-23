@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
+using MatasantoCrypto.Set1.Five;
 using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.Five
+namespace SetOne.Tests.Five
 {
     [TestFixture]
     public class RepeatingKeyXORTests

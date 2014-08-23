@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
+using MatasantoCrypto.Set1.Six;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.Six
+namespace SetOne.Tests.Six
 {
     [TestFixture]
     public class HammingDistanceCalculatorTests

@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using MatasantoCrypto.Set1.Six;
 using MatasantoCrypto.Set1.Three;
 using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
 
-namespace MatasantoCrypto.Set1.Six
+namespace SetOne.Tests.Six
 {
     [TestFixture]
     public class BreakRepeatingKeyXORTests
