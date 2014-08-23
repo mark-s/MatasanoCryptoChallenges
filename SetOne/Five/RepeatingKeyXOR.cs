@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Text;
-using SetOne.Two;
+using MatasantoCrypto.Set1.SharedCore;
+using MatasantoCrypto.Set1.Two;
 
-namespace SetOne.Five
+namespace MatasantoCrypto.Set1.Five
 {
     public class RepeatingKeyXOR
     {
         private readonly IFixedXOR _fixedXOR;
-
+        
         public RepeatingKeyXOR(IFixedXOR fixedXOR)
         {
             _fixedXOR = fixedXOR;
@@ -19,34 +20,33 @@ namespace SetOne.Five
             var sb = new StringBuilder();
 
             var lines = plainText.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            var enumerableRepeatingKey = encryptionKey.Repeat(plainText.Length);
+
+            var totalCharCount = lines.Sum(line => line.Length);
+
+            var enumerableRepeatingKey = Encoding.UTF8.GetBytes(encryptionKey.Repeat(totalCharCount));
 
             foreach (var line in lines)
             {
-                var plainTextBytes = Encoding.UTF8.GetBytes(line.Trim());
+                var plainTextBytes = Encoding.UTF8.GetBytes(line);
                 var encoded = EncodeForOneLine(plainTextBytes, enumerableRepeatingKey);
-                sb.AppendLine(encoded);
+                sb.Append(encoded);
             }
 
             return sb.ToString();
-
         }
 
-
-
-        private string EncodeForOneLine(byte[] line, char[] encryptionKey)
+        public string EncodeForOneLine(byte[] lineBytes, byte[] encryptionKeyBytes)
         {
             string toReturn = "";
 
-            Debug.WriteLine(Encoding.UTF8.GetString(line));
-
-            for (int j = 0; j < line.Length; j++)
+            for (int j = 0; j < lineBytes.Length; j++)
             {
-                toReturn += _fixedXOR.GetFixedXOR(line[j], Encoding.UTF8.GetBytes(encryptionKey[j].ToString())[0]);
+                toReturn += _fixedXOR.XOR(lineBytes[j], encryptionKeyBytes[j]);
             }
 
             return toReturn;
         }
+
 
 
 

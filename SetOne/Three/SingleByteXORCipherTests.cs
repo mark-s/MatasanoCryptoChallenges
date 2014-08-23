@@ -1,14 +1,13 @@
 ﻿using FluentAssertions;
+using MatasantoCrypto.Set1.One;
+using MatasantoCrypto.Set1.SharedCore;
+using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
-using SetOne.One;
-using SetOne.Two;
 
-namespace SetOne.Three
+namespace MatasantoCrypto.Set1.Three
 {
-    [TestFixture]
     public class SingleByteXORCipherTests
     {
-
         private SingleByteXORCipher _xorCipher;
 
         [SetUp]
@@ -18,20 +17,22 @@ namespace SetOne.Three
         }
 
         [Test]
-        public void Unencrypt_GivenhexEncodedString_ReturnUnEncryptedPlaintext()
+        public void Unencrypt_GivenHexEncodedString_ReturnUnEncryptedPlaintext()
         {
             // Arrange
             var secretHex = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
             var expected = "Cooking MC's like a pound of bacon";
-            var convertor = new ConvertHexToBase64();
-            var secretHexBytes = convertor.GetBytesFromhexString(secretHex);
 
+            var convertor = new ConvertHex();
+            var secretHexBytes = convertor.HexStringToByteArray(secretHex);
             // Act
-            string res = _xorCipher.GetUnencryptedText(secretHexBytes);
+
+            ResultItem res = _xorCipher.GetUnencryptedText(secretHexBytes);
 
             // Assert
-            res.Should().Be(expected);
+            res.Text.Should().Be(expected);
         }
+
 
     }
 }

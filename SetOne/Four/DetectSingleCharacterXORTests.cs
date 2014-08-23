@@ -1,45 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
+using MatasantoCrypto.Set1.One;
+using MatasantoCrypto.Set1.Three;
+using MatasantoCrypto.Set1.Two;
 using NUnit.Framework;
-using SetOne.One;
-using SetOne.Three;
-using SetOne.Two;
 
-namespace SetOne.Four
+namespace MatasantoCrypto.Set1.Four
 {
     [TestFixture]
     public class DetectSingleCharacterXORTests
     {
-
         private IDetectSingleCharacterXOR _detector;
 
         [SetUp]
         public virtual void SetUp()
         {
-            _detector = new DetectSingleCharacterXOR(new SingleByteXORCipher(new FixedXOR()), new ConvertHexToBase64());
+            _detector = new DetectSingleCharacterXOR(new SingleByteXORCipher(new FixedXOR()), new ConvertHex());
         }
-
 
         [Test]
         public void Unencrypt_GivenHexEncodedString_ReturnUnEncryptedPlaintext()
         {
-
             // Arrange
-            const string FILE_NAME = (@"C:\Dropbox\FastDev\MatasanoCryptoChallenges\SetOne\Four\4.txt");
+            const string FILE_NAME = @".\Four\4.txt";
             const string EXPECTED = "Now that the party is jumping\n";
 
-            //Act
-            string result = _detector.DetectXOR(FILE_NAME);
+            // Act
+            var result = _detector.DetectXOR(FILE_NAME);
 
             // Assert
-            result.Should().Be(EXPECTED);
-            
+            result.Text.Should().Be(EXPECTED);
         }
-
-
     }
 }

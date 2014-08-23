@@ -1,45 +1,40 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using SetOne.One;
-using SetOne.Three;
+using MatasantoCrypto.Set1.One;
+using MatasantoCrypto.Set1.SharedCore;
+using MatasantoCrypto.Set1.Three;
 
-namespace SetOne.Four
+namespace MatasantoCrypto.Set1.Four
 {
-    
     public interface IDetectSingleCharacterXOR
     {
-        string DetectXOR(string filename);
+        ResultItem DetectXOR(string filename);
     }
-
 
     public class DetectSingleCharacterXOR : IDetectSingleCharacterXOR
     {
-
         private readonly ISingleByteXORCipher _xorCipher;
-        private readonly ConvertHexToBase64 _convertHexToBase64;
+        private readonly ConvertHex _convertHex;
 
-        public DetectSingleCharacterXOR(ISingleByteXORCipher xorCipher, ConvertHexToBase64 convertHexToBase64)
+        public DetectSingleCharacterXOR(ISingleByteXORCipher xorCipher, ConvertHex convertHex)
         {
             _xorCipher = xorCipher;
-            _convertHexToBase64 = convertHexToBase64;
+            _convertHex = convertHex;
         }
 
-        public string DetectXOR(string filename)
+        public ResultItem DetectXOR(string filename)
         {
-            var tests = new Dictionary<string, int>();
-
-            foreach (string line in File.ReadAllLines(filename))
-            {
-                var thisItern = _xorCipher.GetUnencryptedText(_convertHexToBase64.GetBytesFromhexString(line));
-                tests.Add(thisItern, _xorCipher.ScoreCharacters(thisItern));
-            }
-
-            var maxVal = tests.Max(i => i.Value);
-            return tests.FirstOrDefault(v => v.Value == maxVal).Key;
-
+            return CrackXOR(File.ReadAllLines(filename));
         }
 
-        
+        public ResultItem CrackXOR(string[] xoredHexString)
+        {
+
+            return xoredHexString.Select(line => _xorCipher.GetUnencryptedText(_convertHex.HexStringToByteArray(line)))
+                                                  .OrderByDescending(i => i.Score)
+                                               .First();
+        }
+
+
     }
 }
