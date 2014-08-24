@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using MatasantoCrypto.Set1.SharedCore;
 using MatasantoCrypto.Set1.Two;
 
@@ -16,7 +14,6 @@ namespace MatasantoCrypto.Set1.Three
 
         int ScoreCharacter(char character);
 
-        int ScoreCharacter(byte characterAsByte);
     }
 
     public class SingleByteXORCipher : ISingleByteXORCipher
@@ -50,6 +47,7 @@ namespace MatasantoCrypto.Set1.Three
                 tests.Add(new ResultItem
                               {
                                   KeyChar = Convert.ToChar(keyByte),
+                                  KeyByte = keyByte,
                                   Text = text,
                                   Score = score
                               });
@@ -66,13 +64,10 @@ namespace MatasantoCrypto.Set1.Three
         public int ScoreCharacter(char character)
         {
             int score;
-            return _scores.TryGetValue(character, out score) ? score : -8000;
+            return _scores.TryGetValue(character, out score) ? score : -0;
         }
 
-        public int ScoreCharacter(byte characterAsByte)
-        {
-            return ScoreCharacter(Convert.ToChar(characterAsByte));
-        }
+
 
 
         private Dictionary<char, int> ConstructSoreingDictionary()

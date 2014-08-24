@@ -37,7 +37,7 @@ namespace MatasantoCrypto.Set1.One
             return Encoding.UTF8.GetString(tmp);
         }
 
-        
+
 
         public string ByteArrayToHexString(byte[] bytes)
         {
@@ -49,7 +49,7 @@ namespace MatasantoCrypto.Set1.One
             return Convert.ToBase64String(bytes);
         }
 
-        public byte[] GetByteArrayFromBase64( string base64Text)
+        public byte[] GetByteArrayFromBase64(string base64Text)
         {
             return Convert.FromBase64String(base64Text);
         }
