@@ -13,6 +13,8 @@ namespace MatasantoCrypto.Set1.One
         string HexStringToString(string hexEncoded);
 
         string ByteArrayToHexString(byte[] bytes);
+
+        byte[] GetByteArrayFromBase64(string base64Text);
     }
 
     public class ConvertHex : IConvertHex

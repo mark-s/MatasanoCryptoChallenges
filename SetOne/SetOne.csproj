@@ -79,6 +79,7 @@
     </ApplicationDefinition>
     <Compile Include="Five\RepeatingKeyXOR.cs" />
     <Compile Include="Four\DetectSingleCharacterXOR.cs" />
+    <Compile Include="Seven\AESInECBMode.cs" />
     <Compile Include="SharedCore\ResultItem.cs" />
     <Compile Include="SharedCore\StringExtensions.cs" />
     <Compile Include="Six\BreakRepeatingKeyXOR.cs" />

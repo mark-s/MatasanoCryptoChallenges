@@ -23,14 +23,14 @@ namespace MatasantoCrypto.Set1.Six
 
         // key size - hamming distance
         private readonly Dictionary<int, int> _keysizeAndDistances = new Dictionary<int, int>();
-        private readonly ConvertHex _convertor;
+        private readonly IConvertHex _convertor;
 
-        public BreakRepeatingKeyXOR(IGetHammingDistance hammingDistance, ISingleByteXORCipher xorCipher, IFixedXOR fixedXOR)
+        public BreakRepeatingKeyXOR(IGetHammingDistance hammingDistance, ISingleByteXORCipher xorCipher, IFixedXOR fixedXOR, IConvertHex convertor)
         {
             _hammingDistance = hammingDistance;
             _xorCipher = xorCipher;
             _fixedXOR = fixedXOR;
-            _convertor = new ConvertHex();
+            _convertor = convertor;
         }
         
 

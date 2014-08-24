@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MatasantoCrypto.Set1.One;
 using MatasantoCrypto.Set1.Six;
 using MatasantoCrypto.Set1.Three;
 using MatasantoCrypto.Set1.Two;
@@ -14,7 +15,7 @@ namespace SetOne.Tests.Six
         [SetUp]
         public virtual void SetUp()
         {
-            _breaker = new BreakRepeatingKeyXOR(new HammingDistanceCalculator(), new SingleByteXORCipher(new FixedXOR()),new FixedXOR());
+            _breaker = new BreakRepeatingKeyXOR(new HammingDistanceCalculator(), new SingleByteXORCipher(new FixedXOR()),new FixedXOR(), new ConvertHex());
         }
 
 
