@@ -9,10 +9,8 @@ namespace MatasantoCrypto.Set1.Three
     public interface ISingleByteXORCipher
     {
         ResultItem GetUnencryptedText(byte[] bytes);
-
-        int ScoreCharacters(string testString);
-
-        int ScoreCharacter(char character);
+        int ScoreString(string testString);
+        string GetBestScoringString(List<string> strings);
 
     }
 
@@ -42,7 +40,7 @@ namespace MatasantoCrypto.Set1.Three
                     text += Convert.ToChar(num);
                 }
 
-                var score = ScoreCharacters(text);
+                var score = ScoreString(text);
 
                 tests.Add(new ResultItem
                               {
@@ -56,19 +54,24 @@ namespace MatasantoCrypto.Set1.Three
             return tests.OrderByDescending(i => i.Score).First();
         }
 
-        public int ScoreCharacters(string testString)
+        public string GetBestScoringString(List<string> strings)
+        {
+            return strings.Select(testString => new { testString, score = ScoreString(testString) })
+                .Select(t => new ResultItem { Score = t.score, Text = t.testString })
+                .OrderByDescending(s => s.Score).Select(i => i.Text)
+                        .First();
+        }
+
+        public int ScoreString(string testString)
         {
             return testString.Sum(c => ScoreCharacter(c));
         }
 
-        public int ScoreCharacter(char character)
+        private int ScoreCharacter(char character)
         {
             int score;
             return _scores.TryGetValue(character, out score) ? score : -0;
         }
-
-
-
 
         private Dictionary<char, int> ConstructSoreingDictionary()
         {

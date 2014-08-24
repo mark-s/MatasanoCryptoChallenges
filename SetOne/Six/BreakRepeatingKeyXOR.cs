@@ -10,7 +10,12 @@ using MatasantoCrypto.Set1.Two;
 
 namespace MatasantoCrypto.Set1.Six
 {
-    public class BreakRepeatingKeyXOR
+    public interface IBreakRepeatingKeyXOR
+    {
+        ResultItem Decrypt(string base64EncodedFileName, int minKeysize, int maxKeysize);
+    }
+
+    public class BreakRepeatingKeyXOR : IBreakRepeatingKeyXOR
     {
         private readonly IGetHammingDistance _hammingDistance;
         private readonly ISingleByteXORCipher _xorCipher;
@@ -27,55 +32,61 @@ namespace MatasantoCrypto.Set1.Six
             _fixedXOR = fixedXOR;
             _convertor = new ConvertHex();
         }
+        
 
-
-
-        public string Decrypt(string base64EncodedFileName, int minKeysize, int maxKeysize)
+        public ResultItem Decrypt(string base64EncodedFileName, int minKeysize, int maxKeysize)
         {
+            var byteArray = LoadFileToByteArray(base64EncodedFileName);
 
-            byte[] byteArray = LoadFileToByteArray(base64EncodedFileName);
-
+            // TODO: fix this instead of brute forcing the key size guess
             //var probableKeySize = 4;//GetProbableKeySize(byteArray, minKeysize, maxKeysize);
 
-            List<string> reeee = new List<string>();
+            var results = new List<ResultItem>();
             for (int i = 2; i < 40; i++)
-            {
-                reeee.Add(GetResultForKeysize(byteArray, i));
-            }
+                results.Add(GetResultForKeysize(byteArray, i));
 
-            var result = (from rrr in reeee let score = _xorCipher.ScoreCharacters(rrr) select new ResultItem() {Score = score, Text = rrr})
-                .OrderByDescending(s => s.Score).Select(i => i.Text)
-                .First();
+            return results.OrderByDescending(r => r.Score).FirstOrDefault();
 
-
-            return result;
-            //  return GetResultForKeysize(byteArray, probableKeySize);
         }
 
-        private string GetResultForKeysize(byte[] byteArray, int probableKeySizes)
+
+
+        private ResultItem GetResultForKeysize(byte[] byteArray, int probableKeySizes)
         {
             // Now that you probably know the KEYSIZE: break the ciphertext into blocks of KEYSIZE length.  
-            var keySizedPieces = GetChunks(byteArray, probableKeySizes);
+            var keySizedBlocks = GetChunks(byteArray, probableKeySizes);
 
             // Now transpose the blocks: make a block that is the first byte of every block
             // and a block that is the second byte of every block, and so on
-            List<byte[]> transposed = TransposePieces(keySizedPieces, probableKeySizes);
+            List<byte[]> transposedBlocks = Transpose(keySizedBlocks, probableKeySizes);
 
             // Solve each block as if it was single-character XOR. You already have code to do this. 
-            List<ResultItem> perBlockResults = transposed.Select(thisBlock => _xorCipher.GetUnencryptedText(thisBlock)).ToList();
+            List<ResultItem> perBlockResults = transposedBlocks.Select(thisBlock => _xorCipher.GetUnencryptedText(thisBlock)).ToList();
 
             // For each block, the single-byte XOR key that produces the best looking histogram is the
             // repeating-key XOR key byte for that block. Put them together and you have the key.
-            var key = perBlockResults.Aggregate("", (current, t) => current + Convert.ToChar(t.KeyByte));
 
-            var enumerableRepeatingKey = Encoding.UTF8.GetBytes(key.Repeat(byteArray.Length));
+            // construct the Key
+            var constructedKey = perBlockResults.Aggregate("", (current, t) => current + Convert.ToChar(t.KeyByte));
 
-            var res = DecodeForOneLine(byteArray, enumerableRepeatingKey);
+            // decode the text using this key and get it as a string
+            var enumerableRepeatingKey = Encoding.UTF8.GetBytes(constructedKey.Repeat(byteArray.Length));
+            var resultantString = Encoding.UTF8.GetString(DecodeForOneLine(byteArray, enumerableRepeatingKey).ToArray());
 
-            return Encoding.UTF8.GetString(res.ToArray());
+            // get the score for this text
+            var scoreForThisKeysize = _xorCipher.ScoreString(resultantString);
+
+            return new ResultItem()
+            {
+                KeyString = constructedKey,
+                Text = resultantString,
+                Score = scoreForThisKeysize
+            };
+
+
+
         }
-
-
+        
         private int GetProbableKeySize(byte[] byteArray, int minKeysize, int maxKeysize)
         {
             //The KEYSIZE with the smallest normalized edit distance is probably the key. 
@@ -84,9 +95,8 @@ namespace MatasantoCrypto.Set1.Six
 
             return _keysizeAndDistances.OrderBy(i => i.Value).Select(v => v.Value).FirstOrDefault();
         }
-
-
-        public int GetNormalisedDistance(byte[] data, int keysize)
+        
+        private int GetNormalisedDistance(byte[] data, int keysize)
         {
 
             // TODO:
@@ -127,12 +137,7 @@ namespace MatasantoCrypto.Set1.Six
             //return (editDistance1 / keysize);
 
         }
-
-
-
-
-
-
+        
         private byte[] LoadFileToByteArray(string filename)
         {
             var lines = File.ReadAllLines(filename);
@@ -140,7 +145,8 @@ namespace MatasantoCrypto.Set1.Six
 
             return _convertor.GetByteArrayFromBase64(asOneLine);
         }
-        public List<byte> DecodeForOneLine(byte[] lineBytes, byte[] encryptionKeyBytes)
+
+        private List<byte> DecodeForOneLine(byte[] lineBytes, byte[] encryptionKeyBytes)
         {
             var toReturn = new List<byte>();
             for (int j = 0; j < lineBytes.Length; j++)
@@ -151,7 +157,7 @@ namespace MatasantoCrypto.Set1.Six
             return toReturn;
         }
 
-        private List<byte[]> TransposePieces(List<byte[]> keySizedPieces, int keysize)
+        private List<byte[]> Transpose(List<byte[]> keySizedPieces, int keysize)
         {
             // Now transpose the blocks: make a block that is the first byte of every block
             // and a block that is the second byte of every block, and so on
@@ -175,7 +181,7 @@ namespace MatasantoCrypto.Set1.Six
             return toReturn;
         }
 
-        public List<byte[]> GetChunks(byte[] array, int chunkSize)
+        private List<byte[]> GetChunks(byte[] array, int chunkSize)
         {
             var sections = new List<byte[]>();
             var counter = 0;
