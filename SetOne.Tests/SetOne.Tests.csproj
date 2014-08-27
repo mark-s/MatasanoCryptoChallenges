@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Eight\DetectAESInECBModeTests.cs" />
     <Compile Include="Five\RepeatingKeyXORTests.cs" />
     <Compile Include="Four\DetectSingleCharacterXORTests.cs" />
     <Compile Include="One\ConvertHexTests.cs" />
@@ -74,6 +75,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Eight\8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Four\4.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

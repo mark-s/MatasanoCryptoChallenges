@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using MatasantoCrypto.Set1.One;
 using MatasantoCrypto.Set1.SharedCore;
 using MatasantoCrypto.Set1.Three;
@@ -42,8 +43,7 @@ namespace MatasantoCrypto.Set1.Six
             //var probableKeySize = 4;//GetProbableKeySize(byteArray, minKeysize, maxKeysize);
 
             var results = new List<ResultItem>();
-            for (int i = 2; i < 40; i++)
-                results.Add(GetResultForKeysize(byteArray, i));
+            Parallel.For(minKeysize, maxKeysize, (i) => results.Add(GetResultForKeysize(byteArray, i)));
 
             return results.OrderByDescending(r => r.Score).FirstOrDefault();
 

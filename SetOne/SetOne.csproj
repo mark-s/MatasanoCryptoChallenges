@@ -77,6 +77,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Eight\DetectAESInECBMode.cs" />
     <Compile Include="Five\RepeatingKeyXOR.cs" />
     <Compile Include="Four\DetectSingleCharacterXOR.cs" />
     <Compile Include="Seven\AESInECBMode.cs" />
