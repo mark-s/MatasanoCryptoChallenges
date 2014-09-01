@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text;
+using FluentAssertions;
 using NUnit.Framework;
 using SetTwo.One;
 
@@ -21,14 +22,14 @@ namespace SetTwo.Tests.One
 
             // Arrange
             const string TEST_STRING = "YELLOW SUBMARINE";
-            const string EXPECTED_STRING = @"YELLOW SUBMARINE\x04\x04\x04\x04";
+            var expected =   Encoding.UTF8.GetBytes("YELLOW SUBMARINE\x04\x04\x04\x04");
 
             // Act
-            string result = _padder.GetPaddedText(TEST_STRING, 20);
+            var result = _padder.GetPaddedText(TEST_STRING, 20);
 
 
             // Assert
-            result.Should().Be(EXPECTED_STRING);
+            result.Should().BeEquivalentTo(expected);
 
         }
 

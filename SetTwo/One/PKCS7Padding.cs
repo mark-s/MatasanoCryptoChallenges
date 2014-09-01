@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace SetTwo.One
@@ -13,26 +14,41 @@ namespace SetTwo.One
         //  k - (l mod k) octets all having value k - (l mod k), where l is the length of the input.
 
 
-        public string GetPaddedText(string textToPad, int blockLength)
+        public byte[] GetPaddedText(string textToPad, int blockLength)
         {
             var inputTextLengthInBytes = GetByteCount(textToPad);
 
             if (inputTextLengthInBytes > 256 || blockLength > 256)
-                throw new ArgumentOutOfRangeException("blockLength", blockLength, "This padding method is well-defined if and only if k < 256");
+                throw new ArgumentOutOfRangeException("blockLength", blockLength,
+                    "This padding method is well-defined if and only if k < 256");
 
+
+            var textToPadAsBytes = Encoding.UTF8.GetBytes(textToPad);
+ 
             var paddingBytesNeeded = (blockLength % inputTextLengthInBytes);
 
-            var paddingCountAsHexString = String.Format("\\x{0:x2}", paddingBytesNeeded);
+            var asByte = NumberToBytes(paddingBytesNeeded);
 
-            var toAppend = String.Concat(Enumerable.Repeat(paddingCountAsHexString, paddingBytesNeeded));
+            var toReturn = new List<byte>(textToPadAsBytes);
 
-            return textToPad + toAppend;
+            for (int i = 0; i < paddingBytesNeeded; i++)
+            {
+                toReturn.Add(asByte);
+            }
+
+            return toReturn.ToArray();
         }
 
 
         public int GetByteCount(string stringTocount)
         {
             return Encoding.UTF8.GetByteCount(stringTocount);
+        }
+
+
+        private byte NumberToBytes(int number)
+        {
+            return Convert.ToByte(number.ToString(CultureInfo.InvariantCulture), 16);
         }
 
 
